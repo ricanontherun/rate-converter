@@ -2,7 +2,7 @@ package main
 
 import (
 	"errors"
-	"event-rate-converter/conversion"
+	"event-rate-converter/internal/app/event-rate-converter"
 	"fmt"
 	"golang.org/x/text/message"
 	"os"
@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-func parseSourceRate(argument string) (*conversion.EventRate, error) {
+func parseSourceRate(argument string) (*converter.EventRate, error) {
 	parts := strings.Split(argument, "/")
 
 	if len(parts) != 2 {
@@ -24,11 +24,11 @@ func parseSourceRate(argument string) (*conversion.EventRate, error) {
 	}
 
 	interval := strings.ToLower(parts[1])
-	if !conversion.IsAvailableInterval(interval) {
+	if !converter.IsAvailableInterval(interval) {
 		return nil, errors.New(fmt.Sprintf("%s is not a valid interval", interval))
 	}
 
-	source := &conversion.EventRate{
+	source := &converter.EventRate{
 		Count:    parsedNum,
 		Interval: interval,
 	}
@@ -36,15 +36,15 @@ func parseSourceRate(argument string) (*conversion.EventRate, error) {
 	return source, nil
 }
 
-func parseTargetRate(argument string) (*conversion.EventRate, error) {
+func parseTargetRate(argument string) (*converter.EventRate, error) {
 	regexPattern := "^(?P<Count>\\d+)?(?P<Interval>%s)$"
-	re, reErr := regexp.Compile(fmt.Sprintf(regexPattern, strings.Join(conversion.AvailableIntervals, "|")))
+	re, reErr := regexp.Compile(fmt.Sprintf(regexPattern, strings.Join(converter.AvailableIntervals, "|")))
 
 	if reErr != nil {
 		return nil, reErr
 	}
 
-	targetRate := &conversion.EventRate{}
+	targetRate := &converter.EventRate{}
 
 	matches := re.FindStringSubmatch(argument)
 	matchesLen := len(matches)
@@ -87,7 +87,7 @@ func help(err error) {
 	}
 
 	helpString += "usage: event-rate-converter SOURCE_RATE TARGET_RATE\n\n"
-	helpString += "Available intervals: " + strings.Join(conversion.AvailableIntervals, ",") + "\n"
+	helpString += "Available intervals: " + strings.Join(converter.AvailableIntervals, ",") + "\n"
 
 	helpString += "\nExamples:\n"
 	helpString += "\tevent-rate-converter 1000/s ms\n"
@@ -121,7 +121,7 @@ func main() {
 		help(targetErr)
 	}
 
-	if conversionErr := conversion.DoConversion(source, target); conversionErr != nil {
+	if conversionErr := converter.DoConversion(source, target); conversionErr != nil {
 		fmt.Println(conversionErr.Error())
 		os.Exit(1)
 	}

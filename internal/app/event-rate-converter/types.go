@@ -1,4 +1,4 @@
-package conversion
+package converter
 
 const (
 	IntervalMS = "ms"

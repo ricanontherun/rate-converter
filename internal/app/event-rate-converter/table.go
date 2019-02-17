@@ -1,6 +1,6 @@
-package conversion
+package converter
 
-var conversionTable map[string]conversionRateTable = map[string]conversionRateTable{
+var conversionTable = map[string]conversionRateTable{
 	IntervalMS: {
 		IntervalS: millisecondsPerSecond,
 		IntervalM: millisecondsPerSecond * secondsPerMinute,

@@ -1,7 +1,7 @@
-package conversion_test
+package converter_test
 
 import (
-	"event-rate-converstion/conversion"
+	"event-rate-converter/internal/app/event-rate-converter"
 	"testing"
 )
 
