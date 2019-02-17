@@ -19,3 +19,8 @@ How about per 5 minutes?
 -> event-rate-converter SOURCE_RATE TARGET_RATE
 -> OUTPUT
 ```
+
+### Help
+```bash
+-> event-rate-converter --help
+```
