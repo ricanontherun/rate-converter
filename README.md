@@ -2,13 +2,19 @@
 
 e.g, Service A is generating 1.2 errors per second, how many errors per day is that?
 ```bash
--> event-rate-converter 1.2/s d
+-> rate-converter 1.2/s d
 -> 103,680
 ```
 How about per 5 minutes?
 ```bash
--> event-rate-converter 1.2/s 5m
+-> rate-converter 1.2/s 5m
 -> 360
+```
+
+e.g, Running a t2.large EC2 instance will cost me how much per 30 days?
+```bash
+-> rate-converter 0.0928/h 30d
+-> 66.816
 ```
 
 #### _neat._
@@ -16,11 +22,11 @@ How about per 5 minutes?
 ## Usage
 
 ```
--> event-rate-converter SOURCE_RATE TARGET_RATE
+-> rate-converter SOURCE_RATE TARGET_RATE
 -> OUTPUT
 ```
 
 ### Help
 ```bash
--> event-rate-converter --help
+-> rate-converter --help
 ```
