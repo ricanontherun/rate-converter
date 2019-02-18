@@ -29,7 +29,7 @@ func parseSourceRate(argument string) (*converter.EventRate, error) {
 	}
 
 	source := &converter.EventRate{
-		Count:    parsedNum,
+		Count:    float32(parsedNum),
 		Interval: interval,
 	}
 
@@ -68,7 +68,7 @@ func parseTargetRate(argument string) (*converter.EventRate, error) {
 						return nil, atoiErr
 					}
 
-					targetRate.Count = float64(count)
+					targetRate.Count = float32(count)
 				}
 			case "Interval":
 				targetRate.Interval = matches[i]

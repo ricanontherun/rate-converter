@@ -27,8 +27,8 @@ func IsAvailableInterval(interval string) bool {
 }
 
 type EventRate struct {
-	Count    float64
+	Count    float32
 	Interval string
 }
 
-type conversionRateTable = map[string]float64
+type conversionRateTable = map[string]float32
