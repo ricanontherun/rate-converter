@@ -2,7 +2,7 @@ package main
 
 import (
 	"errors"
-	"event-rate-converter/internal/app/event-rate-converter"
+	"rate-converter/internal/app/rate-converter"
 	"fmt"
 	"golang.org/x/text/message"
 	"os"
@@ -86,13 +86,13 @@ func help(err error) {
 		helpString += fmt.Sprintf("Error: %s\n\n", err.Error())
 	}
 
-	helpString += "usage: event-rate-converter SOURCE_RATE TARGET_RATE\n\n"
+	helpString += "usage: rate-converter SOURCE_RATE TARGET_RATE\n\n"
 	helpString += "Available intervals: " + strings.Join(converter.AvailableIntervals, ",") + "\n"
 
 	helpString += "\nExamples:\n"
-	helpString += "\tevent-rate-converter 1000/s ms\n"
+	helpString += "\trate-converter 1000/s ms\n"
 	helpString += "\t1\n"
-	helpString += "\tevent-rate-converter 1/ms s\n"
+	helpString += "\trate-converter 1/ms s\n"
 	helpString += "\t1,000\n"
 
 	fmt.Println(helpString)
