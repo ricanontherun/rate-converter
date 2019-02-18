@@ -18,7 +18,7 @@ func parseSourceRate(argument string) (*converter.EventRate, error) {
 		return nil, errors.New("source rate should be in the form FREQUENCY/INTERVAL")
 	}
 
-	parsedNum, atoiErr := strconv.ParseFloat(parts[0], 64)
+	parsedNum, atoiErr := strconv.ParseFloat(parts[0], 32)
 	if atoiErr != nil {
 		return nil, errors.New("source rate should be in the form FREQUENCY/INTERVAL")
 	}

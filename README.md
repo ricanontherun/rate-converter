@@ -1,4 +1,4 @@
-# Event Rate Converter
+# Rate Converter
 
 e.g, Service A is generating 1.2 errors per second, how many errors per day is that?
 ```bash
