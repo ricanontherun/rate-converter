@@ -2,10 +2,10 @@ package main
 
 import (
 	"errors"
-	"rate-converter/internal/app/rate-converter"
 	"fmt"
 	"golang.org/x/text/message"
 	"os"
+	"rate-converter/internal/app/rate-converter"
 	"regexp"
 	"strconv"
 	"strings"
@@ -127,7 +127,8 @@ func main() {
 	}
 
 	printer := message.NewPrinter(message.MatchLanguage("en"))
-	if _, printErr := printer.Println(target.Count); printErr != nil { // Fallback to fmt
+	_, printErr := printer.Println(fmt.Sprintf("%.2f", target.Count))
+	if printErr != nil { // Fallback to fmt
 		fmt.Println(target.Count)
 	}
 }

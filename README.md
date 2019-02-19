@@ -30,3 +30,7 @@ e.g, Running a t2.large EC2 instance will cost me how much per 30 days?
 ```bash
 -> rate-converter --help
 ```
+
+## Development
+1. Fetch the single dependency used with `go get golang.org/x/text/message`
+2. Use `goreleaser` to package distribution binaries
