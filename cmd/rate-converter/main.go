@@ -4,9 +4,9 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"github.com/ricanontherun/rate-converter/internal/app/rate-converter"
 	"golang.org/x/text/message"
 	"os"
-	"rate-converter/internal/app/rate-converter"
 	"regexp"
 	"strconv"
 	"strings"
@@ -97,10 +97,10 @@ func printResult(result *converter.EventRate, precision int) {
 func main() {
 	flag.Usage = func() {
 		if convertErr != nil {
-			_,_ = fmt.Fprintln(flag.CommandLine.Output(), fmt.Sprintf("Error: %s", convertErr.Error()))
+			_, _ = fmt.Fprintln(flag.CommandLine.Output(), fmt.Sprintf("Error: %s", convertErr.Error()))
 		}
 
-		_,_ = fmt.Fprintln(flag.CommandLine.Output(), fmt.Sprintf("Usage of %s: ", os.Args[0]))
+		_, _ = fmt.Fprintln(flag.CommandLine.Output(), fmt.Sprintf("Usage of %s: ", os.Args[0]))
 
 		flag.PrintDefaults()
 
@@ -108,7 +108,7 @@ func main() {
 	}
 
 	precisionFlag := flag.Int("precision", 2, "Display precision (think %.Nf)")
-	sourceRateFlag := flag.String("source", "", "Source rate, e.g 10/s. Available intervals: " + strings.Join(converter.AvailableIntervals, ","))
+	sourceRateFlag := flag.String("source", "", "Source rate, e.g 10/s. Available intervals: "+strings.Join(converter.AvailableIntervals, ","))
 	targetRateFlag := flag.String("target", "", "Target rate, e.g 30h")
 
 	flag.Parse()

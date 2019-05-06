@@ -29,15 +29,9 @@ I want to print the result with 4 decimal places of precision.
 First, grab the binaries from the releases page.
 
 ```
--> rate-converter SOURCE_RATE TARGET_RATE
+-> rate-converter -source=SOURCE_RATE -target=TARGET_RATE
 -> OUTPUT
 ```
 
-### Help
-```bash
--> rate-converter --help
-```
-
 ## Development
-1. Fetch the single dependency used with `go get golang.org/x/text/message`
 2. Use `goreleaser` to package distribution binaries

@@ -1,35 +1,35 @@
 package converter_test
 
 import (
-	"event-rate-converter/internal/app/rate-converter"
+	"github.com/ricanontherun/rate-converter/internal/app/rate-converter"
 	"testing"
 )
 
 func TestConversions(t *testing.T) {
 	var conversionTests = []struct {
-		sourceCount    float64
+		sourceCount    float32
 		sourceInterval string
 
-		expectedCount  float64
+		expectedCount  float32
 		targetInterval string
 	}{
-		{1.0, conversion.IntervalMS, 1.0, conversion.IntervalMS},
-		{1.0, conversion.IntervalMS, 1000.0, conversion.IntervalS},
-		{1.0, conversion.IntervalMS, 60000.00, conversion.IntervalM},
-		{1.0, conversion.IntervalMS, 3600000, conversion.IntervalH},
-		{1.0, conversion.IntervalMS, 86400000, conversion.IntervalD},
+		{1.0, converter.IntervalMS, 1.0, converter.IntervalMS},
+		{1.0, converter.IntervalMS, 1000.0, converter.IntervalS},
+		{1.0, converter.IntervalMS, 60000.00, converter.IntervalM},
+		{1.0, converter.IntervalMS, 3600000, converter.IntervalH},
+		{1.0, converter.IntervalMS, 86400000, converter.IntervalD},
 
-		{1.0, conversion.IntervalS, .001, conversion.IntervalMS},
-		{1.0, conversion.IntervalS, 1.0, conversion.IntervalS},
-		{1.0, conversion.IntervalS, 60.0, conversion.IntervalM},
-		{1.0, conversion.IntervalS, 3600.0, conversion.IntervalH},
-		{1.0, conversion.IntervalS, 86400.00, conversion.IntervalD},
+		{1.0, converter.IntervalS, .001, converter.IntervalMS},
+		{1.0, converter.IntervalS, 1.0, converter.IntervalS},
+		{1.0, converter.IntervalS, 60.0, converter.IntervalM},
+		{1.0, converter.IntervalS, 3600.0, converter.IntervalH},
+		{1.0, converter.IntervalS, 86400.00, converter.IntervalD},
 
-		{15000.0, conversion.IntervalM, .25, conversion.IntervalMS},
+		{15000.0, converter.IntervalM, .25, converter.IntervalMS},
 	}
 
-	source := &conversion.EventRate{}
-	target := &conversion.EventRate{}
+	source := &converter.EventRate{}
+	target := &converter.EventRate{}
 
 	for _, test := range conversionTests {
 		source.Count = test.sourceCount
@@ -37,7 +37,7 @@ func TestConversions(t *testing.T) {
 
 		target.Interval = test.targetInterval
 
-		if conversionErr := conversion.DoConversion(source, target); conversionErr != nil {
+		if conversionErr := converter.DoConversion(source, target); conversionErr != nil {
 			t.Errorf("Failed to convert: %s\n", conversionErr.Error())
 		} else {
 			if target.Count != test.expectedCount {
