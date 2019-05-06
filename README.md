@@ -21,6 +21,8 @@ e.g, Running a t2.large EC2 instance will cost me how much per 30 days?
 
 ## Usage
 
+First, grab the binaries from the releases page.
+
 ```
 -> rate-converter SOURCE_RATE TARGET_RATE
 -> OUTPUT

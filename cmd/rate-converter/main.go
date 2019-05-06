@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"golang.org/x/text/message"
 	"os"
@@ -11,6 +12,11 @@ import (
 	"strings"
 )
 
+// TODO: Would be very nice to query the system language.
+var printer = message.NewPrinter(message.MatchLanguage("en"))
+var convertErr error
+
+// Parse source rate string into source rate structure.
 func parseSourceRate(argument string) (*converter.EventRate, error) {
 	parts := strings.Split(argument, "/")
 
@@ -36,6 +42,7 @@ func parseSourceRate(argument string) (*converter.EventRate, error) {
 	return source, nil
 }
 
+// Parse a target rate string into a target rate structure.
 func parseTargetRate(argument string) (*converter.EventRate, error) {
 	regexPattern := "^(?P<Count>\\d+)?(?P<Interval>%s)$"
 	re, reErr := regexp.Compile(fmt.Sprintf(regexPattern, strings.Join(converter.AvailableIntervals, "|")))
@@ -79,46 +86,48 @@ func parseTargetRate(argument string) (*converter.EventRate, error) {
 	return targetRate, nil
 }
 
-func help(err error) {
-	helpString := ""
-
-	if err != nil {
-		helpString += fmt.Sprintf("Error: %s\n\n", err.Error())
+// Attempt to print a nicely formatted result. If the required package isn't installed
+// fallback to system fmt
+func printResult(result *converter.EventRate, precision int) {
+	if _, printErr := printer.Println(fmt.Sprintf("%.*f", precision, result.Count)); printErr != nil {
+		fmt.Println(result.Count)
 	}
-
-	helpString += "usage: rate-converter SOURCE_RATE TARGET_RATE\n\n"
-	helpString += "Available intervals: " + strings.Join(converter.AvailableIntervals, ",") + "\n"
-
-	helpString += "\nExamples:\n"
-	helpString += "\trate-converter 1000/s ms\n"
-	helpString += "\t1\n"
-	helpString += "\trate-converter 1/ms s\n"
-	helpString += "\t1,000\n"
-
-	fmt.Println(helpString)
-	os.Exit(1)
 }
 
 func main() {
-	args := os.Args[1:]
-	argLen := len(args)
+	flag.Usage = func() {
+		if convertErr != nil {
+			_,_ = fmt.Fprintln(flag.CommandLine.Output(), fmt.Sprintf("Error: %s", convertErr.Error()))
+		}
 
-	if argLen == 1 && args[0] == "--help" {
-		help(nil)
+		_,_ = fmt.Fprintln(flag.CommandLine.Output(), fmt.Sprintf("Usage of %s: ", os.Args[0]))
+
+		flag.PrintDefaults()
+
+		os.Exit(1)
 	}
 
-	if len(args) != 2 {
-		help(errors.New("incorrect amount of arguments"))
+	precisionFlag := flag.Int("precision", 2, "Display precision (think %.Nf)")
+	sourceRateFlag := flag.String("source", "", "Source rate, e.g 10/s. Available intervals: " + strings.Join(converter.AvailableIntervals, ","))
+	targetRateFlag := flag.String("target", "", "Target rate, e.g 30h")
+
+	flag.Parse()
+
+	sourceRate := *sourceRateFlag
+	targetRate := *targetRateFlag
+
+	if sourceRate == "" || targetRate == "" {
+		flag.Usage()
 	}
 
-	source, sourceErr := parseSourceRate(args[0])
-	if sourceErr != nil {
-		help(sourceErr)
+	source, convertErr := parseSourceRate(sourceRate)
+	if convertErr != nil {
+		flag.Usage()
 	}
 
-	target, targetErr := parseTargetRate(args[1])
-	if targetErr != nil {
-		help(targetErr)
+	target, convertErr := parseTargetRate(targetRate)
+	if convertErr != nil {
+		flag.Usage()
 	}
 
 	if conversionErr := converter.DoConversion(source, target); conversionErr != nil {
@@ -126,9 +135,5 @@ func main() {
 		os.Exit(1)
 	}
 
-	printer := message.NewPrinter(message.MatchLanguage("en"))
-	_, printErr := printer.Println(fmt.Sprintf("%.2f", target.Count))
-	if printErr != nil { // Fallback to fmt
-		fmt.Println(target.Count)
-	}
+	printResult(target, *precisionFlag)
 }
