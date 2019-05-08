@@ -10,22 +10,14 @@ func TestConversions(t *testing.T) {
 		sourceCount    float32
 		sourceInterval string
 
-		expectedCount  float32
+		targetCount    float32
 		targetInterval string
+
+		Result float32
 	}{
-		{1.0, converter.IntervalMS, 1.0, converter.IntervalMS},
-		{1.0, converter.IntervalMS, 1000.0, converter.IntervalS},
-		{1.0, converter.IntervalMS, 60000.00, converter.IntervalM},
-		{1.0, converter.IntervalMS, 3600000, converter.IntervalH},
-		{1.0, converter.IntervalMS, 86400000, converter.IntervalD},
-
-		{1.0, converter.IntervalS, .001, converter.IntervalMS},
-		{1.0, converter.IntervalS, 1.0, converter.IntervalS},
-		{1.0, converter.IntervalS, 60.0, converter.IntervalM},
-		{1.0, converter.IntervalS, 3600.0, converter.IntervalH},
-		{1.0, converter.IntervalS, 86400.00, converter.IntervalD},
-
-		{15000.0, converter.IntervalM, .25, converter.IntervalMS},
+		{1.0, converter.IntervalMS, 5.0, converter.IntervalMS, 5.0},
+		{5.0, converter.IntervalS, 15.0, converter.IntervalM, 4500.00},
+		{60.0, converter.IntervalH, 30, converter.IntervalD, 43200},
 	}
 
 	source := &converter.EventRate{}
@@ -35,13 +27,14 @@ func TestConversions(t *testing.T) {
 		source.Count = test.sourceCount
 		source.Interval = test.sourceInterval
 
+		target.Count = test.targetCount
 		target.Interval = test.targetInterval
 
-		if conversionErr := converter.DoConversion(source, target); conversionErr != nil {
+		if result, conversionErr := converter.DoConversion(source, target); conversionErr != nil {
 			t.Errorf("Failed to convert: %s\n", conversionErr.Error())
 		} else {
-			if target.Count != test.expectedCount {
-				t.Errorf("Received %f, expected %f", target.Count, test.expectedCount)
+			if result != test.Result {
+				t.Errorf("Received %f, expected %f", result, test.Result)
 			}
 		}
 	}

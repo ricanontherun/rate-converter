@@ -12,19 +12,19 @@ const (
 	hoursPerDay           = 24.0
 )
 
-func DoConversion(source *EventRate, target *EventRate) error {
+// Convert one event rate to another.
+func DoConversion(source *EventRate, target *EventRate) (float32, error) {
 	if target.Interval == source.Interval {
-		target.Count = source.Count * target.Count
-		return nil
+		result := source.Count * target.Count
+		return result, nil
 	}
 
 	conversationRate, exists := conversionTable[source.Interval][target.Interval]
-
 	if !exists {
-		return errors.New(fmt.Sprintf("unsupported conversion from %s to %s", source.Interval, target.Interval))
+		return 0, errors.New(fmt.Sprintf("unsupported conversion from %s to %s", source.Interval, target.Interval))
 	}
 
-	target.Count = source.Count * conversationRate * target.Count
+	result := source.Count * conversationRate * target.Count
 
-	return nil
+	return result, nil
 }

@@ -86,11 +86,20 @@ func parseTargetRate(argument string) (*converter.EventRate, error) {
 	return targetRate, nil
 }
 
-// Attempt to print a nicely formatted result. If the required package isn't installed
-// fallback to system fmt
-func printResult(result *converter.EventRate, precision int) {
-	if _, printErr := printer.Println(fmt.Sprintf("%.*f", precision, result.Count)); printErr != nil {
-		fmt.Println(result.Count)
+// Attempt to print a nicely formatted result.
+func printResult(result float32, precision int) {
+	var printErr error
+
+	shouldPrintAsFloat := (result - float32(int32(result))) > 0.0
+	if shouldPrintAsFloat {
+		_, printErr = printer.Println(fmt.Sprintf("%.*f", precision, result))
+	} else {
+		_, printErr = printer.Println(fmt.Sprintf("%d", int32(result)))
+	}
+
+	// Fallback to fmt on package error.
+	if printErr != nil {
+		fmt.Println(result)
 	}
 }
 
@@ -130,10 +139,10 @@ func main() {
 		flag.Usage()
 	}
 
-	if conversionErr := converter.DoConversion(source, target); conversionErr != nil {
+	if result, conversionErr := converter.DoConversion(source, target); conversionErr != nil {
 		fmt.Println(conversionErr.Error())
 		os.Exit(1)
+	} else {
+		printResult(result, *precisionFlag)
 	}
-
-	printResult(target, *precisionFlag)
 }
