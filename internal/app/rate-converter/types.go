@@ -26,6 +26,7 @@ func IsAvailableInterval(interval string) bool {
 	return false
 }
 
+// struct to represent an event rate, e.g something happened Count times per Interval
 type EventRate struct {
 	Count    float32
 	Interval string

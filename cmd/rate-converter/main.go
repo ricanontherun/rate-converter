@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/ricanontherun/rate-converter/internal/app/rate-converter"
 	"golang.org/x/text/message"
+	"golang.org/x/text/number"
 	"os"
 	"regexp"
 	"strconv"
@@ -24,8 +25,9 @@ func parseSourceRate(argument string) (*converter.EventRate, error) {
 		return nil, errors.New("source rate should be in the form FREQUENCY/INTERVAL")
 	}
 
-	parsedNum, atoiErr := strconv.ParseFloat(parts[0], 32)
-	if atoiErr != nil {
+	maybeFrequency := strings.Replace(parts[0], ",", "", -1)
+	parsedNum, parseErr := strconv.ParseFloat(maybeFrequency, 32)
+	if parseErr != nil {
 		return nil, errors.New("source rate should be in the form FREQUENCY/INTERVAL")
 	}
 
@@ -87,18 +89,12 @@ func parseTargetRate(argument string) (*converter.EventRate, error) {
 }
 
 // Attempt to print a nicely formatted result.
-func printResult(result float32, precision int) {
+func printResult(result float32) {
 	var printErr error
 
-	shouldPrintAsFloat := (result - float32(int32(result))) > 0.0
-	if shouldPrintAsFloat {
-		_, printErr = printer.Println(fmt.Sprintf("%.*f", precision, result))
-	} else {
-		_, printErr = printer.Println(fmt.Sprintf("%d", int32(result)))
-	}
-
 	// Fallback to fmt on package error.
-	if printErr != nil {
+	output := printer.Sprintf("%v", number.Decimal(result))
+	if _, printErr = printer.Println(output); printErr != nil {
 		fmt.Println(result)
 	}
 }
@@ -116,7 +112,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	precisionFlag := flag.Int("precision", 2, "Display precision (think %.Nf)")
 	sourceRateFlag := flag.String("source", "", "Source rate, e.g 10/s. Available intervals: "+strings.Join(converter.AvailableIntervals, ","))
 	targetRateFlag := flag.String("target", "", "Target rate, e.g 30h")
 
@@ -143,6 +138,6 @@ func main() {
 		fmt.Println(conversionErr.Error())
 		os.Exit(1)
 	} else {
-		printResult(result, *precisionFlag)
+		printResult(result)
 	}
 }
