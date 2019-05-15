@@ -3,6 +3,7 @@ package converter
 import (
 	"errors"
 	"fmt"
+	"math"
 )
 
 const (
@@ -19,12 +20,14 @@ func DoConversion(source *EventRate, target *EventRate) (float32, error) {
 		return result, nil
 	}
 
-	conversationRate, exists := conversionTable[source.Interval][target.Interval]
+	conversionRate, exists := conversionTable[source.Interval][target.Interval]
 	if !exists {
 		return 0, errors.New(fmt.Sprintf("unsupported conversion from %s to %s", source.Interval, target.Interval))
 	}
 
-	result := source.Count * conversationRate * target.Count
+	result := source.Count * conversionRate * target.Count
 
-	return result, nil
+	roundedResult := math.Round(float64(result) * 100) / 100
+
+	return float32(roundedResult), nil
 }

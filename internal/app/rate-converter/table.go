@@ -17,7 +17,7 @@ var conversionTable = map[string]conversionRateTable{
 
 	IntervalM: {
 		IntervalMS: 1.0 / (secondsPerMinute * millisecondsPerSecond),
-		IntervalS:  secondsPerMinute,
+		IntervalS:  1.0 / secondsPerMinute,
 		IntervalH:  minutesPerHour,
 		IntervalD:  minutesPerHour * hoursPerDay,
 	},

@@ -15,10 +15,13 @@ func TestConversions(t *testing.T) {
 
 		Result float32
 	}{
+		// Convert from more frequent to less frequent.
 		{1.0, converter.IntervalMS, 5.0, converter.IntervalMS, 5.0},
 		{5.0, converter.IntervalS, 15.0, converter.IntervalM, 4500.00},
 		{60.0, converter.IntervalH, 30, converter.IntervalD, 43200},
 		{1.0, converter.IntervalD, 1, converter.IntervalD, 1},
+		{19000.0, converter.IntervalM, 1, converter.IntervalS, 316.67},
+		{24.0, converter.IntervalD, 1, converter.IntervalH, 1},
 	}
 
 	source := &converter.EventRate{}
